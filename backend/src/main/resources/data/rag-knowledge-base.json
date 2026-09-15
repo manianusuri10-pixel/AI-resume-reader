@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Backend Engineering Competency Matrix (Java / Spring Boot)",
+    "category": "TECHNICAL_COMPETENCIES",
+    "content": "Core competencies for Senior Java & Spring Boot Engineers include: Java 17/21 features (Records, Pattern Matching, Virtual Threads), Spring Boot 3 autoconfiguration, Spring Security 6 stateless JWT architecture, Spring Data JPA with query optimization (N+1 resolution via EntityGraphs or JOIN FETCH), Hibernate caching (L1/L2), ACID transactions and isolation levels (READ_COMMITTED, REPEATABLE_READ), RESTful API design standards, Apache Kafka event streaming with partition keys and consumer group balancing, Docker containerization, and Kubernetes deployment with readiness/liveness probes.",
+    "source": "Industry Tech Benchmarks 2026"
+  },
+  {
+    "title": "Frontend Engineering Competency Matrix (React / TypeScript)",
+    "category": "TECHNICAL_COMPETENCIES",
+    "content": "Essential competencies for Modern React Frontend Engineers: React 18+ Concurrent features (useTransition, Suspense), strict TypeScript typing (Generics, Discriminated Unions), Client & Server state management (TanStack Query, Zustand, Redux Toolkit), Tailwind CSS responsive styling, Web Performance optimization (code splitting, lazy loading, Core Web Vitals LCP/INP/CLS), secure client-side token storage and HTTP-only cookie workflows, accessible UI (ARIA guidelines), and unit/integration testing with Vitest and React Testing Library.",
+    "source": "Frontend Engineering Standards"
+  },
+  {
+    "title": "System Design & Distributed Architecture Rubric",
+    "category": "SYSTEM_DESIGN",
+    "content": "System design evaluations focus on scalability, fault tolerance, and high availability. Key principles include: Horizontal vs Vertical scaling, API Gateway and Reverse Proxy routing (Nginx, Kong), Layer 4 vs Layer 7 Load Balancing (Consistent Hashing, Round Robin), Database Sharding and Read Replicas, Caching strategies (Cache-Aside, Write-Through, Write-Behind with Redis/Memcached), Message Queues (Kafka/RabbitMQ) for asynchronous decoupling, Distributed Consensus (Raft/Paxos), and Resilience patterns (Circuit Breaker with Resilience4j, Rate Limiting, Retry with exponential backoff).",
+    "source": "Distributed Systems Handbook"
+  },
+  {
+    "title": "ATS Resume Scoring & Formatting Best Practices",
+    "category": "RESUME_ATS_STANDARDS",
+    "content": "Applicant Tracking Systems (ATS) like Workday, Greenhouse, and Lever parse plain text and standard PDF formats. Critical guidelines: 1) Structure with standard section headings: Professional Summary, Core Technical Skills, Professional Experience, Projects, Education, Certifications. 2) Employ the STAR method (Situation, Task, Action, Result) in experience bullet points. 3) Every major bullet point must contain measurable business impact (e.g., 'reduced API response time by 42%', 'optimized AWS cloud costs saving $18,000/yr', 'scaled system to handle 10,000 requests/sec'). 4) Keyword density: Align technical terminology directly with targeted Job Description keywords without keyword stuffing. 5) Avoid multi-column tables, embedded charts, or text boxes that break standard ATS parser tokenizers.",
+    "source": "ATS Parsing & Recruitment Standards"
+  },
+  {
+    "title": "Technical Interview Rubric: Spring Boot & Concurrency",
+    "category": "INTERVIEW_RUBRIC",
+    "content": "High-scoring interview responses in Java/Spring Boot must address: 1) Threading models: Difference between Platform Threads and Project Loom Virtual Threads, carrier thread scheduling, and why pinning on synchronized blocks was mitigated in recent JDKs. 2) Spring Dependency Injection: Bean lifecycles, Singleton vs Prototype scopes, proxy mechanism behind @Transactional (CGLIB dynamic proxies, self-invocation caveats). 3) Database optimization: Connection pooling with HikariCP, avoiding Hibernate N+1 queries using JOIN FETCH, and optimistic locking (@Version) vs pessimistic locking (PESSIMISTIC_WRITE).",
+    "source": "Senior Engineering Interview Guide"
+  },
+  {
+    "title": "Technical Interview Rubric: React State & Performance",
+    "category": "INTERVIEW_RUBRIC",
+    "content": "Top interview answers for React & Modern Web include: 1) Re-rendering mechanics: How state changes trigger virtual DOM reconciliation, the role of Object.is equality checks, when to use useMemo and useCallback versus premature optimization. 2) Component Architecture: Composition over inheritance, custom hooks for separating UI from business logic. 3) Security best practices: Mitigating XSS through React string escaping, Content Security Policy (CSP), avoiding vulnerable third-party packages, and secure handling of JWT access tokens in memory.",
+    "source": "Modern Web Interview Framework"
+  },
+  {
+    "title": "DevOps, Cloud & Containerization Benchmarks",
+    "category": "DEVOPS_CLOUD",
+    "content": "Modern cloud infrastructure expectations: Docker multi-stage builds to minimize image attack surface and size (distroless/alpine runtimes), Docker Compose for orchestrated multi-service environments, CI/CD pipelines (GitHub Actions, GitLab CI) with automated linting, security vulnerability scans (Trivy, Snyk), and container registries. Cloud infrastructure-as-code (Terraform) provisioning compute (ECS/EKS, Cloud Run), managed databases (RDS MySQL), and object storage (S3) with least-privilege IAM roles.",
+    "source": "Cloud Architecture Reference"
+  },
+  {
+    "title": "Behavioral & Leadership Evaluation (STAR Method)",
+    "category": "BEHAVIORAL_RUBRIC",
+    "content": "Evaluators grade behavioral answers on: 1) Structured storytelling using STAR: clear context, specific ownership ('I' instead of vague 'we'), proactive technical decisions, and quantitative resolution. 2) Conflict resolution & code reviews: Empathetic technical discussions, constructive PR feedback, resolving architectural stalemates through data and prototypes. 3) Mentorship and technical debt management: Balancing feature delivery against refactoring and automated testing.",
+    "source": "Engineering Leadership Benchmarks"
+  }
+]
