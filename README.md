@@ -154,6 +154,8 @@ npm.cmd --prefix frontend run build
 ```
 The local profile uses H2 and does not require MySQL or an external LLM key. Set `JWT_SECRET`, `CORS_ALLOWED_ORIGINS`, and the database variables from `.env.example` for deployment.
 
+For a separately deployed frontend, set `VITE_API_URL` to the backend API base URL including `/api` (for example, `https://your-backend.onrender.com/api`) and set the backend `CORS_ALLOWED_ORIGINS` to the frontend URL. The default `/api` client path is for the bundled Docker/Nginx deployment.
+
 ### 4. Demo Login Credentials
 For instant 1-click testing without manual signup:
 - Click the **"1-Click Demo"** button on the Navbar, OR enter:

@@ -33,7 +33,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Authentication failed. Please check your credentials.');
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        'Authentication failed. Please check your credentials.'
+      );
     } finally {
       setLoading(false);
     }
