@@ -18,5 +18,8 @@ USER appuser
 
 COPY --from=builder /app/target/ai-career-copilot-1.0.0.jar app.jar
 
-ENV SPRING_PROFILES_ACTIVE=mysql
+# Use H2 for the first Render deployment so the backend can start
+# without requiring an external MySQL server.
+ENV SPRING_PROFILES_ACTIVE=h2
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
