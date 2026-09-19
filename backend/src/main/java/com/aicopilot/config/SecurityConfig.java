@@ -85,7 +85,9 @@ public class SecurityConfig {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
             Map<String, Object> body = new HashMap<>();
-            body.put("timestamp", LocalDateTime.now());
+            // Store the timestamp as a String because this method uses a plain
+            // ObjectMapper and does not need the Jackson Java Time module.
+            body.put("timestamp", LocalDateTime.now().toString());
             body.put("status", HttpStatus.UNAUTHORIZED.value());
             body.put("error", "Unauthorized");
             body.put("message", "Authentication required to access this resource.");
@@ -102,7 +104,8 @@ public class SecurityConfig {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
             Map<String, Object> body = new HashMap<>();
-            body.put("timestamp", LocalDateTime.now());
+            // Store the timestamp as a String for compatibility with the plain ObjectMapper.
+            body.put("timestamp", LocalDateTime.now().toString());
             body.put("status", HttpStatus.FORBIDDEN.value());
             body.put("error", "Forbidden");
             body.put("message", "You do not have permission to access this resource.");
