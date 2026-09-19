@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './pages/AuthModal';
 import { Dashboard } from './pages/Dashboard';
@@ -13,6 +13,7 @@ import { Sparkles, Terminal, Shield, Layers } from 'lucide-react';
 const MainLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { sessionMessage, dismissSessionMessage } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-brand-500 selection:text-black">
@@ -27,6 +28,21 @@ const MainLayout: React.FC = () => {
         setActiveTab={setActiveTab}
         onOpenAuth={() => setIsAuthOpen(true)}
       />
+
+      {sessionMessage && (
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+          <div className="flex items-center justify-between rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            <span>{sessionMessage}</span>
+            <button
+              type="button"
+              onClick={dismissSessionMessage}
+              className="ml-4 rounded-md border border-amber-300/40 px-2 py-1 text-xs font-medium text-amber-100 hover:bg-amber-400/10"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="relative z-10 flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
         {activeTab === 'dashboard' && (

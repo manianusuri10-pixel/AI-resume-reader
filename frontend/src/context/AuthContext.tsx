@@ -1,16 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthResponse } from '../types';
-import { apiClient } from '../api/client';
+import { apiClient, SESSION_EXPIRED_MESSAGE } from '../api/client';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  sessionMessage: string | null;
   login: (email: string, password: string) => Promise<void>;
   demoLogin: () => Promise<void>;
   register: (email: string, password: string, fullName: string, targetRole?: string, yearsOfExperience?: number) => Promise<void>;
   logout: () => void;
+  dismissSessionMessage: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,10 +29,15 @@ const readStoredUser = (): User | null => {
   }
 };
 
+const readStoredSessionMessage = (): string | null => {
+  return localStorage.getItem('aicopilot_session_message');
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(readStoredUser);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('aicopilot_token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [sessionMessage, setSessionMessage] = useState<string | null>(readStoredSessionMessage);
 
   useEffect(() => {
     if (token) {
@@ -40,7 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('aicopilot_user', JSON.stringify(res.data));
         })
         .catch(() => {
-          // Token expired or invalid
+          const expiredMessage = SESSION_EXPIRED_MESSAGE;
+          localStorage.setItem('aicopilot_session_message', expiredMessage);
+          setSessionMessage(expiredMessage);
           logout();
         })
         .finally(() => setIsLoading(false));
@@ -49,7 +58,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [token]);
 
+  useEffect(() => {
+    const handleSessionExpired = (event: Event) => {
+      const customEvent = event as CustomEvent<{ message?: string }>;
+      const message = customEvent.detail?.message ?? SESSION_EXPIRED_MESSAGE;
+      setSessionMessage(message);
+      localStorage.setItem('aicopilot_session_message', message);
+      logout();
+    };
+
+    window.addEventListener('aicopilot:session-expired', handleSessionExpired);
+    return () => {
+      window.removeEventListener('aicopilot:session-expired', handleSessionExpired);
+    };
+  }, []);
+
   const handleAuthSuccess = (data: AuthResponse) => {
+    localStorage.removeItem('aicopilot_session_message');
+    setSessionMessage(null);
     setToken(data.token);
     const u: User = {
       id: data.id,
@@ -90,6 +116,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('aicopilot_user');
   };
 
+  const dismissSessionMessage = () => {
+    setSessionMessage(null);
+    localStorage.removeItem('aicopilot_session_message');
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -97,10 +128,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         isAuthenticated: !!token,
         isLoading,
+        sessionMessage,
         login,
         demoLogin,
         register,
         logout,
+        dismissSessionMessage,
       }}
     >
       {children}

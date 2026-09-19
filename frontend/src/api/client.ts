@@ -12,12 +12,26 @@ import {
 
 const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
+const SESSION_EXPIRED_MESSAGE = 'Your session expired. Please sign in again.';
+
 const api = axios.create({
   baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+const clearSessionState = (message = SESSION_EXPIRED_MESSAGE) => {
+  localStorage.removeItem('aicopilot_token');
+  localStorage.removeItem('aicopilot_user');
+  localStorage.setItem('aicopilot_session_message', message);
+
+  window.dispatchEvent(
+    new CustomEvent('aicopilot:session-expired', {
+      detail: { message },
+    })
+  );
+};
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('aicopilot_token');
@@ -30,17 +44,18 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // If unauthenticated on protected routes, clear token
-      const isAuthEndpoint = error.config?.url?.includes('/auth/');
-      if (!isAuthEndpoint) {
-        localStorage.removeItem('aicopilot_token');
-        localStorage.removeItem('aicopilot_user');
-      }
+    const status = error.response?.status;
+    const isAuthEndpoint = error.config?.url?.includes('/auth/');
+
+    if ((status === 401 || status === 403) && !isAuthEndpoint) {
+      clearSessionState();
     }
+
     return Promise.reject(error);
   }
 );
+
+export { SESSION_EXPIRED_MESSAGE };
 
 export const apiClient = {
   // Auth
