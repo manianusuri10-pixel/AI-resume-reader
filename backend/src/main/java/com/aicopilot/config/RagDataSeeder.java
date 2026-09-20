@@ -48,14 +48,19 @@ public class RagDataSeeder implements CommandLineRunner {
     }
 
     private void seedDemoUser() {
-        if (!userRepository.existsByEmail("demo@aicopilot.com")) {
-            User demoUser = new User(
-                    "demo@aicopilot.com",
-                    passwordEncoder.encode("password123"),
-                    "Alex Mercer",
-                    "Senior Full Stack & AI Engineer",
-                    5
-            );
+        User demoUser = userRepository.findByEmail("demo@aicopilot.com").orElseGet(() -> new User(
+                "demo@aicopilot.com",
+                passwordEncoder.encode("password123"),
+                "Alex Mercer",
+                "Senior Full Stack & AI Engineer",
+                5
+        ));
+
+        if (!passwordEncoder.matches("password123", demoUser.getPassword())) {
+            demoUser.setPassword(passwordEncoder.encode("password123"));
+            userRepository.save(demoUser);
+            log.info("Reset default demo user password: demo@aicopilot.com / password123");
+        } else if (demoUser.getId() == null) {
             userRepository.save(demoUser);
             log.info("Seeded default demo user: demo@aicopilot.com / password123");
         }

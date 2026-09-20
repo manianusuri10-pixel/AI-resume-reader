@@ -32,12 +32,13 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("An account with email " + request.getEmail() + " already exists.");
+        String email = normalizeEmail(request.getEmail());
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("An account with email " + email + " already exists.");
         }
 
         User user = new User(
-                request.getEmail(),
+                email,
                 passwordEncoder.encode(request.getPassword()),
                 request.getFullName(),
                 request.getTargetRole() != null ? request.getTargetRole() : "Software Engineer",
@@ -58,11 +59,12 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest request) {
+        String email = normalizeEmail(request.getEmail());
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(email, request.getPassword())
         );
 
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
         String token = jwtService.generateToken(user.getEmail());
@@ -78,8 +80,12 @@ public class AuthService {
     }
 
     public UserDto getCurrentUser(String email) {
-        User user = userRepository.findByEmail(email)
+                User user = userRepository.findByEmail(normalizeEmail(email))
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + email));
         return new UserDto(user);
     }
+
+        private String normalizeEmail(String email) {
+                return email == null ? null : email.trim().toLowerCase(java.util.Locale.ROOT);
+        }
 }
