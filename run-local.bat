@@ -14,5 +14,9 @@ echo.
 echo Default Demo Credentials:
 echo Email:    demo@aicopilot.com
 echo Password: password123
+echo.
+echo Launching browser to http://localhost:5173 in 5 seconds...
+timeout /t 5 /nobreak >nul
+start http://localhost:5173
 echo ===================================================
 pause

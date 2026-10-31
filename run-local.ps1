@@ -15,4 +15,7 @@ Write-Host " - Frontend Web: http://localhost:5173" -ForegroundColor White
 Write-Host "`nDefault Demo Credentials:" -ForegroundColor Yellow
 Write-Host " Email:    demo@aicopilot.com" -ForegroundColor White
 Write-Host " Password: password123" -ForegroundColor White
+Write-Host "`nLaunching browser to http://localhost:5173 in 5 seconds..." -ForegroundColor Cyan
+Start-Sleep -Seconds 5
+Start-Process "http://localhost:5173"
 Write-Host "===================================================" -ForegroundColor Cyan

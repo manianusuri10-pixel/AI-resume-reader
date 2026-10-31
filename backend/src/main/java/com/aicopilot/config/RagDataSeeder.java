@@ -56,13 +56,19 @@ public class RagDataSeeder implements CommandLineRunner {
                 5
         ));
 
+        boolean needsSave = false;
         if (!passwordEncoder.matches("password123", demoUser.getPassword())) {
             demoUser.setPassword(passwordEncoder.encode("password123"));
-            userRepository.save(demoUser);
+            needsSave = true;
             log.info("Reset default demo user password: demo@aicopilot.com / password123");
-        } else if (demoUser.getId() == null) {
+        }
+        if (demoUser.getRoles() == null || demoUser.getRoles().isBlank()) {
+            demoUser.setRoles("ROLE_USER");
+            needsSave = true;
+        }
+        if (demoUser.getId() == null || needsSave) {
             userRepository.save(demoUser);
-            log.info("Seeded default demo user: demo@aicopilot.com / password123");
+            log.info("Seeded/updated default demo user: demo@aicopilot.com / password123");
         }
     }
 

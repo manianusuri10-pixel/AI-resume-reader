@@ -1,0 +1,65 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Backend (Spring Boot)",
+            "type": "shell",
+            "command": "mvn spring-boot:run",
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*Starting AiCareerCopilotApplication.*",
+                    "endsPattern": ".*Started AiCareerCopilotApplication.*"
+                }
+            },
+            "presentation": {
+                "group": "servers",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Frontend (Vite)",
+            "type": "shell",
+            "command": "npm.cmd run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*VITE.*ready.*",
+                    "endsPattern": ".*Local:.*http://localhost:5173/.*"
+                }
+            },
+            "presentation": {
+                "group": "servers",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Both (Backend + Frontend)",
+            "dependsOn": [
+                "Start Backend (Spring Boot)",
+                "Start Frontend (Vite)"
+            ],
+            "dependsOrder": "parallel",
+            "problemMatcher": []
+        }
+    ]
+}
+

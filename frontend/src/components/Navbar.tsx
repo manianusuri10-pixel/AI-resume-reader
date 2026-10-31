@@ -10,6 +10,18 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenAuth }) => {
   const { user, isAuthenticated, logout, demoLogin } = useAuth();
+  const [demoLoading, setDemoLoading] = React.useState(false);
+
+  const handleNavbarDemo = async () => {
+    setDemoLoading(true);
+    try {
+      await demoLogin();
+    } catch {
+      onOpenAuth();
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard' },
@@ -78,11 +90,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenA
           ) : (
             <div className="flex items-center space-x-2">
               <button
-                onClick={demoLogin}
-                className="hidden sm:inline-flex items-center space-x-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 px-3 py-1.5 text-xs font-semibold text-brand-400 hover:bg-brand-500/20 transition"
+                onClick={handleNavbarDemo}
+                disabled={demoLoading}
+                className="hidden sm:inline-flex items-center space-x-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 px-3 py-1.5 text-xs font-semibold text-brand-400 hover:bg-brand-500/20 transition disabled:opacity-50"
               >
                 <Zap className="h-3.5 w-3.5" />
-                <span>1-Click Demo</span>
+                <span>{demoLoading ? 'Signing in...' : '1-Click Demo'}</span>
               </button>
               <button
                 onClick={onOpenAuth}

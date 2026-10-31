@@ -20,6 +20,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const getErrorMessage = (err: any, fallback: string) => {
+    if (err.response?.data?.error) return err.response.data.error;
+    if (err.response?.data?.message) return err.response.data.message;
+    if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
+      return 'Unable to connect to backend API. Please ensure the backend is running at http://localhost:8080.';
+    }
+    return err.message || fallback;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -33,12 +42,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
       onClose();
     } catch (err: any) {
-      setError(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        err.message ||
-        'Authentication failed. Please check your credentials.'
-      );
+      setError(getErrorMessage(err, 'Authentication failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       await demoLogin();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Demo login failed');
+      setError(getErrorMessage(err, 'Demo login failed. Please ensure the backend is running.'));
     } finally {
       setLoading(false);
     }

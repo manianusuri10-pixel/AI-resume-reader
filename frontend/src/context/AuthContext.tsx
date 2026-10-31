@@ -40,7 +40,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [sessionMessage, setSessionMessage] = useState<string | null>(readStoredSessionMessage);
 
   useEffect(() => {
-    if (token) {
+    const savedToken = localStorage.getItem('aicopilot_token');
+    if (savedToken) {
       apiClient.getMe()
         .then((res) => {
           setUser(res.data);
@@ -56,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       setIsLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     const handleSessionExpired = (event: Event) => {

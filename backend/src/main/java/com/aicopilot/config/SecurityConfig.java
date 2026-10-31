@@ -51,13 +51,16 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .map(user -> new org.springframework.security.core.userdetails.User(
-                        user.getEmail(),
-                        user.getPassword(),
-                        Collections.singletonList(new SimpleGrantedAuthority(user.getRoles()))
-                ))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return username -> {
+            String normalized = username == null ? "" : username.trim().toLowerCase(java.util.Locale.ROOT);
+            return userRepository.findByEmail(normalized)
+                    .map(user -> new org.springframework.security.core.userdetails.User(
+                            user.getEmail(),
+                            user.getPassword(),
+                            Collections.singletonList(new SimpleGrantedAuthority(user.getRoles()))
+                    ))
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        };
     }
 
     @Bean
@@ -127,7 +130,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**", "/error", "/api/rag/search").permitAll()
+                        .requestMatchers("/", "/api", "/api/auth/**", "/h2-console/**", "/error", "/api/rag/search").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -139,10 +142,24 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
+        java.util.List<String> origins = Arrays.stream(allowedOrigins.split(","))
             .map(String::trim)
             .filter(origin -> !origin.isEmpty())
-            .toList());
+            .toList();
+
+        // Allow any localhost and 127.0.0.1 ports (80, 5173, 8080, 3000, 4173, etc.) as well as configured origins
+        java.util.List<String> patterns = new java.util.ArrayList<>(Arrays.asList(
+            "http://localhost*",
+            "https://localhost*",
+            "http://127.0.0.1*",
+            "https://127.0.0.1*"
+        ));
+        for (String origin : origins) {
+            if (!patterns.contains(origin)) {
+                patterns.add(origin);
+            }
+        }
+        configuration.setAllowedOriginPatterns(patterns);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
         configuration.setAllowCredentials(true);

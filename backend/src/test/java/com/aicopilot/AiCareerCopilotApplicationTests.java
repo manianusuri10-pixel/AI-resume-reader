@@ -1,7 +1,11 @@
 package com.aicopilot;
 
 import com.aicopilot.config.JwtService;
+import com.aicopilot.dto.AuthRequest;
+import com.aicopilot.dto.AuthResponse;
+import com.aicopilot.dto.RegisterRequest;
 import com.aicopilot.dto.ResumeAnalysisResponse;
+import com.aicopilot.service.AuthService;
 import com.aicopilot.service.DocumentParserService;
 import com.aicopilot.service.VectorStoreService;
 import com.aicopilot.service.llm.LocalAiFallbackService;
@@ -30,11 +34,43 @@ class AiCareerCopilotApplicationTests {
     @Autowired
     private LocalAiFallbackService localAiFallbackService;
 
+    @Autowired
+    private AuthService authService;
+
     @Test
     void contextLoads() {
         assertNotNull(jwtService);
         assertNotNull(vectorStoreService);
         assertNotNull(documentParserService);
+        assertNotNull(authService);
+    }
+
+    @Test
+    void testDemoLogin() {
+        AuthResponse response = authService.login(new AuthRequest("demo@aicopilot.com", "password123"));
+        assertNotNull(response);
+        assertNotNull(response.getToken());
+        assertEquals("demo@aicopilot.com", response.getEmail());
+    }
+
+    @Test
+    void testRegisterAndLogin() {
+        String uniqueEmail = "testuser" + System.currentTimeMillis() + "@example.com";
+        RegisterRequest registerReq = new RegisterRequest();
+        registerReq.setEmail(uniqueEmail);
+        registerReq.setPassword("password123");
+        registerReq.setFullName("Test User");
+        registerReq.setTargetRole("Developer");
+        registerReq.setYearsOfExperience(3);
+
+        AuthResponse registerResponse = authService.register(registerReq);
+        assertNotNull(registerResponse);
+        assertNotNull(registerResponse.getToken());
+
+        AuthResponse loginResponse = authService.login(new AuthRequest(uniqueEmail, "password123"));
+        assertNotNull(loginResponse);
+        assertNotNull(loginResponse.getToken());
+        assertEquals(uniqueEmail, loginResponse.getEmail());
     }
 
     @Test

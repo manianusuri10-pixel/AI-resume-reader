@@ -10,7 +10,10 @@ import {
   RagQueryResponse
 } from '../types';
 
-const apiBaseUrl = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || '').trim();
+const apiBaseUrl = rawApiUrl
+  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/$/, '')}/api`)
+  : '/api';
 
 const SESSION_EXPIRED_MESSAGE = 'Your session expired. Please sign in again.';
 

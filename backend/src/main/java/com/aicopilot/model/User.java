@@ -61,7 +61,9 @@ public class User {
     public Integer getYearsOfExperience() { return yearsOfExperience; }
     public void setYearsOfExperience(Integer yearsOfExperience) { this.yearsOfExperience = yearsOfExperience; }
 
-    public String getRoles() { return roles; }
+    public String getRoles() {
+        return (roles == null || roles.isBlank()) ? "ROLE_USER" : roles;
+    }
     public void setRoles(String roles) { this.roles = roles; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
